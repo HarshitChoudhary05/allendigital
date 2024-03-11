@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subject Cards</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+           
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 1000px;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: #1937ac;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            width: calc(33.33% - 20px); /* Three cards per row */
+            max-width: 300px;
+            text-align: center;
+            margin-bottom: 20px;
+           
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        h3 {
+            margin-top: 0;
+            color: #ffffff;
+        }
+
+        @media screen and (max-width: 768px) {
+            .card {
+                width: calc(50% - 20px); /* Two cards per row */
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .card {
+                width: 100%; /* One card per row */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="isomerismContainer">
+        <!-- Subject cards will be dynamically added here -->
+    </div>
+
+    <script>
+        // Fetch data from the API
+        fetch('https://allenapi.vercel.app/chemistry/isomerism.json')
+            .then(response => response.json())
+            .then(data => {
+                const isomerism = data.data.isomerism;
+                const container = document.getElementById('isomerismContainer');
+
+                // Iterate through each subject and create a card
+                for (const key in isomerism) {
+                    if (isomerism.hasOwnProperty(key)) {
+                        const subject = isomerism[key];
+                        const card = document.createElement('div');
+                        card.classList.add('card');
+                        card.innerHTML = `
+                            <h3>${subject.name}</h3>
+                        `;
+
+                        // Add click event listener to open player.html with the subject URL
+                        card.addEventListener('click', () => {
+    // Store the URL in local storage
+    localStorage.setItem('videoURL', subject.url);
+    // Redirect to player.html
+    window.location.href = 'player.html';
+});
+
+
+                        container.appendChild(card);
+                    }
+                }
+            })
+            .catch(error => console.error('Error fetching subjects:', error));
+    </script>
+</body>
+</html>
